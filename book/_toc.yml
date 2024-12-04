@@ -4,6 +4,7 @@
 format: jb-book
 root: intro
 chapters:
+- file: 0_basics
 - file: 1_prog_basics
 - file: 2_actions
 - file: 3_box_ball
@@ -12,7 +13,8 @@ chapters:
 - file: 6_box_ball_sim
 - file: 7_interaction_waiting_condition
 - file: 8_resources_sim
-- file: basics
-- file: processes_interaction
-- file: post
-- file: bank
+- file: examples
+  sections:
+  - file: processes_interaction
+  - file: post
+  - file: bank
