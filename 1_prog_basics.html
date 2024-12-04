@@ -1,0 +1,808 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Основы программирования дискретно-событийных моделей &#8212; Discrete-Event Simulation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '1_prog_basics';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Процессы, события, действия" href="2_actions.html" />
+    <link rel="prev" title="Дискретно-событийное моделирование в Python" href="intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Discrete-Event Simulation - Home"/>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="Discrete-Event Simulation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Дискретно-событийное моделирование в Python
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Основы программирования дискретно-событийных моделей</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_actions.html">Процессы, события, действия</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_box_ball.html">Шарик в коробке</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_box_ball_class.html">Управление дискретно-событийным моделированием</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_box_ball_yield.html">Генераторы событий</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_box_ball_sim.html">Дискретно-событийное моделирование с SimPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_interaction_waiting_condition.html">Взаимодействие процессов, ожидание завершения процесса, условные события</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8_resources_sim.html">Ресурсы в контексте дискретно-событийного моделирования</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basics.html">Основы основ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="processes_interaction.html">Взаимодействие между процессами</a></li>
+<li class="toctree-l1"><a class="reference internal" href="post.html">Моделирование почтового отделения</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bank.html">Обслуживание клиентов банка</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/unexpectedCoder/descrete-event-sim-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/unexpectedCoder/descrete-event-sim-book/issues/new?title=Issue%20on%20page%20%2F1_prog_basics.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/1_prog_basics.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Основы программирования дискретно-событийных моделей</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Событие</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Процесс</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Действия</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Цикл дискретно-событийного моделирования</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Исходный код</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>Основы программирования дискретно-событийных моделей<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>В ДСМ фундаментальным понятием, на котором построено построено практически всё, является понятие <em>события</em> (англ. event).
+Светофор переключился с красного сигнала на зелёный, падающее тело ударилось о землю, по кабелю связи пущен электрический импульс и т.п. - это всё примеры событий.</p>
+<p>Как мы уже выяснили, при ДСМ события помещаются в <em>очередь с приоритетом</em> (англ. priority queue), из которой <em>в основном цикле моделирования</em> события извлекаются в порядке времени их наступления.
+То есть всегда необходимо знать, <strong>когда</strong> произойдёт каждое событие.</p>
+<p>Ещё одним важным понятием, почти всегда сопутствующим событию, является понятие <em>действия</em>.
+Это то, что происходит при наступлении события.
+К примеру, токарь завершил обработку детали (событие) и передал её на следующую ступень технологического процесса (действие), скажем, в цех нанесения покрытий.</p>
+<p>В этом цехе покрытий начинается <em>процесс</em> нанесения покрытия на деталь.
+Этот процесс занимает определённое время, рано или поздно завершаясь.
+Завершение процесса - это тоже событие.</p>
+<p>Допустим, после покрытия деталь готова к транспортировке в магазин или на склад.
+Деталь грузят в грузовой автомобиль, который развозит груз по нескольким точкам.
+Начинается процесс доставки, генерирующий несколько событий: автомобиль приехал на склад А, приехал на склад Б и т.д.
+Каждому событию отвечают свои действия, заключающиеся в определении того, какие детали должны быть разгружены на текущем складе.</p>
+<p>Другими словами, процессы порождают (или <em>генерируют</em>) одно или несколько событий, при наступлении которых выполняются соответствующие действия.
+Вот и вся суть ДСМ.</p>
+<p>На основании этого создадим простой класс события <code class="docutils literal notranslate"><span class="pre">Event</span></code> (на самом деле, он будет простенькой структурой данных), содержащий в себе два поля: время наступления события (<code class="docutils literal notranslate"><span class="pre">when</span></code>) и список действий (<code class="docutils literal notranslate"><span class="pre">actions</span></code>), которые необходимо выполнить при наступлении события.</p>
+<section id="id2">
+<h2>Событие<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Event</span><span class="p">:</span>
+    <span class="n">when</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">actions</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">compare</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Подробно о <code class="docutils literal notranslate"><span class="pre">dataclasses</span></code> можно почитать в <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html">документации</a> стандартной библиотеки.
+Достаточно знать, что данный декоратор упрощает запись класса.
+В итоге имеет класс <code class="docutils literal notranslate"><span class="pre">Event</span></code> с нужными полями, которые у созданных экземпляров нельзя изменять (<code class="docutils literal notranslate"><span class="pre">frozen</span></code>), а также объекты класса могут быть упорядочены (<code class="docutils literal notranslate"><span class="pre">order</span></code>) по значению поля <code class="docutils literal notranslate"><span class="pre">when</span></code> (времени наступления).
+Запись <code class="docutils literal notranslate"><span class="pre">field(compare=False)</span></code> исключает поле <code class="docutils literal notranslate"><span class="pre">actions</span></code> из сравнения.</p>
+<p>Далее рассмотрим простой процесс работы светофора.</p>
+</section>
+<section id="id3">
+<h2>Процесс<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>Рассмотри процесс работы двухцветного светофора.
+Вначале горит красный свет в течение времени <code class="docutils literal notranslate"><span class="pre">dt_red</span></code>, затем происходит событие “прошло время <code class="docutils literal notranslate"><span class="pre">t_red</span></code>” - светофор переключается на зелёный и горит в течение <code class="docutils literal notranslate"><span class="pre">t_green</span></code>.
+И так далее до заданного времени <code class="docutils literal notranslate"><span class="pre">until</span></code>.</p>
+<p>Для наглядности сперва заведём глобальные переменные:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">PriorityQueue</span>
+<span class="c1"># queue является частью стандартной библиотеки</span>
+
+<span class="c1"># Возможные состояния светофора</span>
+<span class="n">RED</span><span class="p">,</span> <span class="n">GREEN</span> <span class="o">=</span> <span class="s2">&quot;RED&quot;</span><span class="p">,</span> <span class="s2">&quot;GREEN&quot;</span>
+<span class="c1"># Текущее состояние светофора</span>
+<span class="n">current_lights</span> <span class="o">=</span> <span class="n">RED</span>
+<span class="c1"># Время работы светофора в двух режимах</span>
+<span class="n">t_red</span><span class="p">,</span> <span class="n">t_green</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+<span class="c1"># Текущее модельное время</span>
+<span class="n">now</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1"># Очередь событий</span>
+<span class="n">events</span> <span class="o">=</span> <span class="n">PriorityQueue</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Применение глобальных переменных в коде чревато трудноуловимыми ошибками.
+Не используйте их.
+В данном учебнике они применяются исключительно с демонстрационными целями и для упрощения кода.</p>
+<p>Сам процесс работы светофора можно описать несложной функцией:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">lights</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Функция-процесс работы светофора.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">events</span>
+    <span class="c1"># Очередь событий есть глобальная переменная,</span>
+    <span class="c1"># поэтому для её изменения в области функции</span>
+    <span class="c1"># необходимо использовать оператор global</span>
+    <span class="c1"># (иначе не сработает её метод put)</span>
+
+    <span class="k">if</span> <span class="n">current_lights</span> <span class="ow">is</span> <span class="n">RED</span><span class="p">:</span>
+        <span class="c1"># Добавляем событие &quot;конец красного&quot; в очередь</span>
+        <span class="n">events</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span>
+            <span class="n">when</span><span class="o">=</span><span class="n">now</span> <span class="o">+</span> <span class="n">t_red</span><span class="p">,</span>
+            <span class="n">actions</span><span class="o">=</span><span class="p">[</span><span class="n">red2green</span><span class="p">,</span> <span class="n">lights</span><span class="p">]</span>
+        <span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Добавляем событие &quot;конец зелёного&quot; в очередь</span>
+        <span class="n">events</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span>
+            <span class="n">when</span><span class="o">=</span><span class="n">now</span> <span class="o">+</span> <span class="n">t_green</span><span class="p">,</span>
+            <span class="n">actions</span><span class="o">=</span><span class="p">[</span><span class="n">green2red</span><span class="p">,</span> <span class="n">lights</span><span class="p">]</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>Вы видите, что при создании событий указаны списки действий, которые необходимо выполнить при наступлении этого самого события.</p>
+</section>
+<section id="id4">
+<h2>Действия<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>Действия могут быть процессами, т.е. порождать события, при наступлении которых должны выполняться другие действия и т.д.
+Это позволяет простыми средствами строить дискретно-событийные модели практически любой сложности.</p>
+<p>В рассматриваемой модели светофора возможных действий три:</p>
+<ol class="arabic simple">
+<li><p>Переключить с красного на зелёный <code class="docutils literal notranslate"><span class="pre">red2green()</span></code>.</p></li>
+<li><p>Переключить с зелёного на красный <code class="docutils literal notranslate"><span class="pre">green2red()</span></code>.</p></li>
+<li><p>Заново запустить генерацию событий вызовом той же самой функции <code class="docutils literal notranslate"><span class="pre">lights</span></code>.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">red2green</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Переключить светофор с красного на зелёный.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">current_lights</span>
+    <span class="c1"># Для возможности изменения глобальной переменной</span>
+    <span class="c1"># снова пользуемся оператором global</span>
+    <span class="n">current_lights</span> <span class="o">=</span> <span class="n">GREEN</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">current_lights</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">green2red</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Переключить светофор с зелёного на красный.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">current_lights</span>
+    <span class="n">current_lights</span> <span class="o">=</span> <span class="n">RED</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">current_lights</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Пока код может казаться непонятным, но мы переходим к основному циклу моделирования, так что вскоре всё прояснится!</p>
+</section>
+<section id="id5">
+<h2>Цикл дискретно-событийного моделирования<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<p>Цикл ДСМ достаточно прост (если не сказать тривиален):</p>
+<ol class="arabic simple">
+<li><p>Запускаем все начальные процессы <code class="docutils literal notranslate"><span class="pre">processes</span></code>.</p></li>
+<li><p>Входим в цикл, условиями выхода из которого является либо опустошение очереди событий <code class="docutils literal notranslate"><span class="pre">events</span></code>, либо то, что следующее событие произойдёт после заданного времени <code class="docutils literal notranslate"><span class="pre">until</span></code>.</p>
+<ol class="arabic simple">
+<li><p>Берём из <code class="docutils literal notranslate"><span class="pre">events</span></code> ближайшее <code class="docutils literal notranslate"><span class="pre">event</span></code>.</p></li>
+<li><p>Обновляем счётчик времени <code class="docutils literal notranslate"><span class="pre">now</span></code> временем наступления <code class="docutils literal notranslate"><span class="pre">event</span></code>.</p></li>
+<li><p>Выполняем все действия <code class="docutils literal notranslate"><span class="pre">actions</span></code>, соответствующие наступившему событию.</p></li>
+</ol>
+</li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">des_loop</span><span class="p">(</span><span class="n">processes</span><span class="p">,</span> <span class="n">until</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Основной цикл дискретно-событийного моделирования.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">now</span><span class="p">,</span> <span class="n">events</span>
+
+    <span class="c1"># Запускаем все начальные процессы</span>
+    <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">processes</span><span class="p">:</span>
+        <span class="n">proc</span><span class="p">()</span>
+    <span class="c1"># В результате в events появятся события</span>
+    
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">events</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+        <span class="c1"># Берём ближайшее событие</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">events</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="c1"># Проверяем одно из условий выхода из цикла</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">when</span> <span class="o">&gt;</span> <span class="n">until</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="c1"># В ином случае обновляем модельное время</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">when</span>
+        <span class="c1"># Выполняем действия</span>
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">actions</span><span class="p">:</span>
+            <span class="n">action</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Обратите внимание, вывода сообщений в консоль с помощью <code class="docutils literal notranslate"><span class="pre">print(...)</span></code> в цикле ДСМ нет - это <em>чистая функция</em> (функция без побочных эффектов).
+Всё необходимое выводится на экран, записывается в файл и т.д. в функциях процессов или действий.</p>
+<p>Запустить цикл можно следующим образом:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Выводим на экран начальное состояние модели</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Время</span><span class="se">\t</span><span class="s2">Текущий сигнал&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">current_lights</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Формируем список начальных процессов</span>
+<span class="c1"># (с чего-то же нужно начать?)</span>
+<span class="n">processes</span> <span class="o">=</span> <span class="p">[</span><span class="n">lights</span><span class="p">]</span>
+<span class="c1"># Запускаем цикл</span>
+<span class="n">des_loop</span><span class="p">(</span><span class="n">processes</span><span class="p">,</span> <span class="n">until</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+
+<span class="c1"># Далее обрабатывают накопленные данные, строят графики</span>
+<span class="c1"># и делают прочие полезные действия...</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Время	Текущий сигнал
+0	RED
+1	GREEN
+3	RED
+4	GREEN
+6	RED
+7	GREEN
+</pre></div>
+</div>
+</div>
+</div>
+<p>Теперь можно легко понять, почему в процессе <code class="docutils literal notranslate"><span class="pre">lights()</span></code> одним из действий является вызов этой же функции: таким образом получается бесконечный процесс работы светофора.</p>
+<p>Таковы основы программной реализации простейшей дискретно-событийной модели.
+В следующем разделе поговорим о том, как этот алгоритм может быть улучшен и как использовать возможности Python для упрощения его реализации.</p>
+</section>
+<section id="id6">
+<h2>Исходный код<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<div class="cell tag_hide-cell docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell content</span>
+<span class="expanded">Hide code cell content</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">PriorityQueue</span>
+
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Event</span><span class="p">:</span>
+    <span class="n">when</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+    <span class="n">actions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">compare</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">lights</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">events</span>
+
+    <span class="k">if</span> <span class="n">current_lights</span> <span class="ow">is</span> <span class="n">RED</span><span class="p">:</span>
+        <span class="n">events</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span>
+            <span class="n">when</span><span class="o">=</span><span class="n">now</span> <span class="o">+</span> <span class="n">t_red</span><span class="p">,</span>
+            <span class="n">actions</span><span class="o">=</span><span class="p">[</span><span class="n">red2green</span><span class="p">,</span> <span class="n">lights</span><span class="p">]</span>
+        <span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">events</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">Event</span><span class="p">(</span>
+            <span class="n">when</span><span class="o">=</span><span class="n">now</span> <span class="o">+</span> <span class="n">t_green</span><span class="p">,</span>
+            <span class="n">actions</span><span class="o">=</span><span class="p">[</span><span class="n">green2red</span><span class="p">,</span> <span class="n">lights</span><span class="p">]</span>
+        <span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">red2green</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">current_lights</span>
+    <span class="n">current_lights</span> <span class="o">=</span> <span class="n">GREEN</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">current_lights</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">green2red</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">current_lights</span>
+    <span class="n">current_lights</span> <span class="o">=</span> <span class="n">RED</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">current_lights</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">des_loop</span><span class="p">(</span><span class="n">processes</span><span class="p">,</span> <span class="n">until</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">now</span><span class="p">,</span> <span class="n">events</span>
+
+    <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">processes</span><span class="p">:</span>
+        <span class="n">proc</span><span class="p">()</span>
+    
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">events</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">events</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">when</span> <span class="o">&gt;</span> <span class="n">until</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="n">now</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">when</span>
+
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">actions</span><span class="p">:</span>
+            <span class="n">action</span><span class="p">()</span>
+
+
+<span class="c1"># Возможные состояния светофора</span>
+<span class="n">RED</span><span class="p">,</span> <span class="n">GREEN</span> <span class="o">=</span> <span class="s2">&quot;RED&quot;</span><span class="p">,</span> <span class="s2">&quot;GREEN&quot;</span>
+<span class="c1"># Текущее состояние светофора</span>
+<span class="n">current_lights</span> <span class="o">=</span> <span class="n">RED</span>
+<span class="c1"># Время работы светофора в двух режимах</span>
+<span class="n">t_red</span><span class="p">,</span> <span class="n">t_green</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+<span class="c1"># Текущее модельное время</span>
+<span class="n">now</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1"># Очередь событий</span>
+<span class="n">events</span> <span class="o">=</span> <span class="n">PriorityQueue</span><span class="p">()</span>
+<span class="c1"># Моделирование</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Время</span><span class="se">\t</span><span class="s2">Текущий сигнал&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">now</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">current_lights</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">processes</span> <span class="o">=</span> <span class="p">[</span><span class="n">lights</span><span class="p">]</span>
+<span class="n">des_loop</span><span class="p">(</span><span class="n">processes</span><span class="p">,</span> <span class="n">until</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Время	Текущий сигнал
+0	RED
+1	GREEN
+3	RED
+4	GREEN
+6	RED
+7	GREEN
+</pre></div>
+</div>
+</div>
+</details>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Дискретно-событийное моделирование в Python</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="2_actions.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Процессы, события, действия</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Событие</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Процесс</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Действия</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Цикл дискретно-событийного моделирования</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Исходный код</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
